@@ -25,19 +25,21 @@ jobs:
         channel: 'stable'
         flutter-version: '3.22.2'
 
-    - name: Safe Scaffold & Build APK
+    - name: Initialize Android Scaffolding & Compile
       run: |
-        cp lib/main.dart /tmp/main.dart.bak
-        cp pubspec.yaml /tmp/pubspec.yaml.bak
-        rm -rf android
-        flutter create --org com.enspeaking --project-name enspeaking --platforms=android .
-        cp /tmp/main.dart.bak lib/main.dart
-        cp /tmp/pubspec.yaml.bak pubspec.yaml
+        mkdir -p /tmp/save
+        cp -f lib/main.dart /tmp/save/main.dart
+        cp -f pubspec.yaml /tmp/save/pubspec.yaml
+        rm -rf android .dart_tool
+        flutter create --org com.enspeaking --project-name enspeaking --platforms=android --no-pub .
+        cp -f /tmp/save/main.dart lib/main.dart
+        cp -f /tmp/save/pubspec.yaml pubspec.yaml
         flutter pub get
         flutter build apk --release --no-tree-shake-icons
 
-    - name: Upload APK
+    - name: Upload En-Speaking APK
       uses: actions/upload-artifact@v4
       with:
         name: EnSpeaking-Release-APK
         path: build/app/outputs/flutter-apk/app-release.apk
+        retention-days: 7
