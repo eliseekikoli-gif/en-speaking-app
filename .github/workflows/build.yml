@@ -25,9 +25,14 @@ jobs:
         channel: 'stable'
         flutter-version: '3.22.2'
 
-    - name: Scaffold & Build Release APK
+    - name: Safe Scaffold & Build APK
       run: |
+        cp lib/main.dart /tmp/main.dart.bak
+        cp pubspec.yaml /tmp/pubspec.yaml.bak
+        rm -rf android
         flutter create --org com.enspeaking --project-name enspeaking --platforms=android .
+        cp /tmp/main.dart.bak lib/main.dart
+        cp /tmp/pubspec.yaml.bak pubspec.yaml
         flutter pub get
         flutter build apk --release --no-tree-shake-icons
 
